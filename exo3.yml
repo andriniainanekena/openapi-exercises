@@ -1,0 +1,133 @@
+openapi: 3.0.3
+info:
+  title: Tasks API
+  description: An API for managing tasks, including creating, retrieving, and deleting tasks.
+  version: 1.0.0
+components:
+  schemas:
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        title:
+          type: string
+          example: Faire les courses
+        completed:
+          type: boolean
+          example: false
+      required:
+        - id
+        - title
+        - completed
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Task not found
+      required:
+        - error
+paths:
+  /tasks:
+    get:
+      summary: Retrieve all tasks
+      description: Returns a list of all tasks.
+      responses:
+        '200':
+          description: A list of tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+    post:
+      summary: Create new tasks
+      description: Creates a list of new tasks provided in the request body.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Task'
+      responses:
+        '201':
+          description: Tasks created successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+    delete:
+      summary: Delete multiple tasks
+      description: Deletes tasks based on a list of IDs provided in the request body.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: integer
+                example: 1
+      responses:
+        '200':
+          description: Tasks deleted successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+  /tasks/{id}:
+    get:
+      summary: Retrieve a task by ID
+      description: Returns a task with the specified ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Task retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Delete a task by ID
+      description: Deletes a task with the specified ID and returns the deleted task.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Task deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
