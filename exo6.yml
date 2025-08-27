@@ -1,0 +1,178 @@
+openapi: 3.0.3
+info:
+  title: User Profile API
+  version: 1.0.0
+  description: API for managing user profiles with decomposed sub-resources
+
+paths:
+  /users/{id}:
+    get:
+      summary: Retrieve a user profile by ID
+      operationId: getUserProfile
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        '200':
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '404':
+          description: User not found
+
+  /users:
+    post:
+      summary: Create a list of user profiles
+      operationId: createUsers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CreateUserProfile'
+      responses:
+        '201':
+          description: Users created successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserProfile'
+
+  /users/{id}/personalInfo:
+    put:
+      summary: Update personal information of a user
+      operationId: updatePersonalInfo
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonalInfo'
+      responses:
+        '200':
+          description: Personal information updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalInfo'
+        '404':
+          description: User not found
+
+  /users/{id}/address:
+    put:
+      summary: Update address of a user
+      operationId: updateAddress
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Address'
+      responses:
+        '200':
+          description: Address updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Address'
+        '404':
+          description: User not found
+
+  /users/{id}/preferences:
+    put:
+      summary: Update preferences of a user
+      operationId: updatePreferences
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Preferences'
+      responses:
+        '200':
+          description: Preferences updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Preferences'
+        '404':
+          description: User not found
+
+components:
+  parameters:
+    UserId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Unique identifier of the user
+
+  schemas:
+    PersonalInfo:
+      type: object
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        birthdate:
+          type: string
+          format: date
+        email:
+          type: string
+          format: email
+      required: [first_name, last_name, birthdate, email]
+
+    Address:
+      type: object
+      properties:
+        address_street:
+          type: string
+        address_city:
+          type: string
+        address_country:
+          type: string
+        address_postal_code:
+          type: integer
+      required: [address_street, address_city, address_country, address_postal_code]
+
+    Preferences:
+      type: object
+      properties:
+        needs_newsletter:
+          type: boolean
+        language:
+          type: string
+          enum: [mg, fr, eng]
+      required: [needs_newsletter, language]
+
+    CreateUserProfile:
+      allOf:
+        - $ref: '#/components/schemas/PersonalInfo'
+        - $ref: '#/components/schemas/Address'
+        - $ref: '#/components/schemas/Preferences'
+
+    UserProfile:
+      allOf:
+        - $ref: '#/components/schemas/PersonalInfo'
+        - $ref: '#/components/schemas/Address'
+        - $ref: '#/components/schemas/Preferences'
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+          required: [id]
