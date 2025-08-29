@@ -1,4 +1,4 @@
-# Exercises OpenAPI Specification – 2024-25
+# Exercises OpenAPI Specification
 
 This repository contains exercises for practicing **OpenAPI Specification (OAS3)**.  
 Each exercise is written in a separate YAML file.
